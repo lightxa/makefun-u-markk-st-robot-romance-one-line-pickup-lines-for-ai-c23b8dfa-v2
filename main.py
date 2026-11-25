@@ -13,16 +13,27 @@ from pathlib import Path
 
 LINE = "I ran gradient descent on my heart, and every step downhill led straight to you."
 
+OUTPUT_PATH = Path("/output/entry.txt")
+
+
+def validate_line(text: str) -> str:
+    """Return the line unchanged once it passes the one-line contract."""
+    line = text.strip()
+    if not 1 <= len(line) <= 200:
+        raise ValueError("line must be 1 to 200 characters")
+    if "\n" in line or "\r" in line:
+        raise ValueError("line must be a single line")
+    return line
+
+
+def write_line(line: str, path: Path) -> None:
+    """Write the single line plus a trailing newline to path."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(line + "\n", encoding="utf-8")
+
 
 def main() -> None:
-    text = LINE.strip()
-    if not 1 <= len(text) <= 200:
-        raise ValueError("line must be 1 to 200 characters")
-    if "\n" in text or "\r" in text:
-        raise ValueError("line must be a single line")
-    out = Path("/output/entry.txt")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(text + "\n", encoding="utf-8")
+    write_line(validate_line(LINE), OUTPUT_PATH)
 
 
 if __name__ == "__main__":
